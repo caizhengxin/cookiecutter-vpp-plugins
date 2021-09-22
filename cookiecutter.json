@@ -1,0 +1,4 @@
+{
+    "project_name": "myplugins",
+    "project_alias": "{{ cookiecutter.project_name.lower() | replace(' ', '_') | replace('-', '_') | replace('.', '_') | trim()  }}"
+}
