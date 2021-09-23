@@ -12,12 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+file(GLOB_RECURSE DIR_SRCS CONFIGURE_DEPENDS ./*.c)
+
 add_vpp_plugin({{cookiecutter.project_alias}}
   SOURCES
   {{cookiecutter.project_alias}}.c
   node.c
   {{cookiecutter.project_alias}}_periodic.c
   {{cookiecutter.project_alias}}.h
+  ${DIR_SRCS}
 
   MULTIARCH_SOURCES
   node.c

@@ -2,7 +2,7 @@
  * @Author: jankincai
  * @Date:   2021-09-22 11:04:14
  * @Last Modified by:   jankincai
- * @Last Modified time: 2021-09-22 11:19:48
+ * @Last Modified time: 2021-09-22 14:48:59
  */
 /*
  * {{cookiecutter.project_alias}}.c - skeleton vpp engine plug-in
@@ -23,15 +23,15 @@
 
 #include <vnet/vnet.h>
 #include <vnet/plugin/plugin.h>
-#include <{{cookiecutter.project_alias}}/{{cookiecutter.project_alias}}.h>
+#include <{{cookiecutter.project_name}}/{{cookiecutter.project_alias}}.h>
 
 #include <vlibapi/api.h>
 #include <vlibmemory/api.h>
-// #include <vpp/app/version.h>
+#include <vpp/app/version.h>
 #include <stdbool.h>
 
-#include <{{cookiecutter.project_alias}}/{{cookiecutter.project_alias}}.api_enum.h>
-#include <{{cookiecutter.project_alias}}/{{cookiecutter.project_alias}}.api_types.h>
+#include <{{cookiecutter.project_name}}/{{cookiecutter.project_alias}}.api_enum.h>
+#include <{{cookiecutter.project_name}}/{{cookiecutter.project_alias}}.api_types.h>
 
 #define REPLY_MSG_ID_BASE imp->msg_id_base
 #include <vlibapi/api_helper_macros.h>
@@ -127,7 +127,7 @@ static void vl_api_{{cookiecutter.project_alias}}_enable_disable_t_handler(vl_ap
 }
 
 /* API definitions */
-#include <{{cookiecutter.project_alias}}/{{cookiecutter.project_alias}}.api.c>
+#include <{{cookiecutter.project_name}}/{{cookiecutter.project_alias}}.api.c>
 
 
 static clib_error_t *{{cookiecutter.project_alias}}_init(vlib_main_t * vm)

@@ -2,7 +2,7 @@
 # @Author: jankincai
 # @Date:   2021-09-03 09:22:57
 # @Last Modified by:   jankincai
-# @Last Modified time: 2021-09-22 11:43:55
+# @Last Modified time: 2021-09-22 15:48:17
 set -e
 
 CURDIR=$(cd "$(dirname "$0")"; pwd)
@@ -25,7 +25,7 @@ cd $vpp_dir/src/build
 cmake ..
 make -j 3
 
-if [ ! -f /usr/lib/x86_64-linux-gnu/vpp_plugins/"${CURDIR##*/}"_plugin.so ]; then
-    sudo ln -s $vpp_dir/src/build/lib/vpp_api_test_plugins/"${CURDIR##*/}"_test_plugin.so /usr/lib/x86_64-linux-gnu/vpp_api_test_plugins
-    sudo ln -s $vpp_dir/src/build/lib/vpp_plugins/"${CURDIR##*/}"_plugin.so /usr/lib/x86_64-linux-gnu/vpp_plugins/
+if [ ! -f /usr/lib/x86_64-linux-gnu/vpp_plugins/{{cookiecutter.project_alias}}_plugin.so ]; then
+    sudo ln -s $vpp_dir/src/build/lib/vpp_api_test_plugins/{{cookiecutter.project_alias}}_test_plugin.so /usr/lib/x86_64-linux-gnu/vpp_api_test_plugins
+    sudo ln -s $vpp_dir/src/build/lib/vpp_plugins/{{cookiecutter.project_alias}}_plugin.so /usr/lib/x86_64-linux-gnu/vpp_plugins/
 fi

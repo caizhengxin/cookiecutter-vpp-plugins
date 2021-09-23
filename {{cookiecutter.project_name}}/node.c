@@ -2,7 +2,7 @@
  * @Author: jankincai
  * @Date:   2021-09-02 21:10:40
  * @Last Modified by:   jankincai
- * @Last Modified time: 2021-09-22 13:57:13
+ * @Last Modified time: 2021-09-22 14:18:02
  */
 /*
  * node.c - skeleton vpp engine plug-in dual-loop node skeleton
@@ -24,7 +24,7 @@
 #include <vnet/vnet.h>
 #include <vnet/pg/pg.h>
 #include <vppinfra/error.h>
-#include <{{cookiecutter.project_alias}}/{{cookiecutter.project_alias}}.h>
+#include <{{cookiecutter.project_name}}/{{cookiecutter.project_alias}}.h>
 
 typedef struct 
 {

@@ -2,7 +2,7 @@
  * @Author: jankincai
  * @Date:   2021-09-10 13:43:30
  * @Last Modified by:   jankincai
- * @Last Modified time: 2021-09-22 11:22:44
+ * @Last Modified time: 2021-09-22 14:17:02
  */
 /*
  * {{cookiecutter.project_alias}}.c - {{cookiecutter.project_alias}} vpp-api-test plug-in
@@ -32,8 +32,8 @@
 uword unformat_sw_if_index (unformat_input_t * input, va_list * args);
 
 /* Declare message IDs */
-#include <{{cookiecutter.project_alias}}/{{cookiecutter.project_alias}}.api_enum.h>
-#include <{{cookiecutter.project_alias}}/{{cookiecutter.project_alias}}.api_types.h>
+#include <{{cookiecutter.project_name}}/{{cookiecutter.project_alias}}.api_enum.h>
+#include <{{cookiecutter.project_name}}/{{cookiecutter.project_alias}}.api_types.h>
 
 
 typedef struct
@@ -93,7 +93,7 @@ static int api_{{cookiecutter.project_alias}}_enable_disable (vat_main_t * vam)
  * List of messages that the {{cookiecutter.project_alias}} test plugin sends,
  * and that the data plane plugin processes
  */
-#include <{{cookiecutter.project_alias}}/{{cookiecutter.project_alias}}.api_test.c>
+#include <{{cookiecutter.project_name}}/{{cookiecutter.project_alias}}.api_test.c>
 
 /*
  * fd.io coding-style-patch-verification: ON

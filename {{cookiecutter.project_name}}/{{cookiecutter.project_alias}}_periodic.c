@@ -2,7 +2,7 @@
  * @Author: jankincai
  * @Date:   2021-09-22 11:24:22
  * @Last Modified by:   jankincai
- * @Last Modified time: 2021-09-22 11:29:44
+ * @Last Modified time: 2021-09-22 14:23:46
  */
 /*
  * {{cookiecutter.project_alias}}_periodic.c - skeleton plug-in periodic function
@@ -23,7 +23,7 @@
 
 #include <vlib/vlib.h>
 #include <vppinfra/error.h>
-#include <{{cookiecutter.project_alias}}/{{cookiecutter.project_alias}}.h>
+#include <{{cookiecutter.project_name}}/{{cookiecutter.project_alias}}.h>
 
 static void handle_event1({{cookiecutter.project_alias}}_main_t *pm, f64 now, uword event_data)
 {
@@ -107,7 +107,7 @@ void {{cookiecutter.project_alias}}_create_periodic_process ({{cookiecutter.proj
 
     /* No, create it now and make a note of the node index */
     fmp->periodic_node_index = vlib_process_create (fmp->vlib_main,
-        "{{cookiecutter.project_alias}}-periodic-process",
+        "{{cookiecutter.project_name}}-periodic-process",
         {{cookiecutter.project_alias}}_periodic_process, 16 /* log2_n_stack_bytes */);
 }
 
