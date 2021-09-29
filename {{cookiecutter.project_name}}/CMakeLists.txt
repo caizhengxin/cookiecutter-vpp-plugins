@@ -17,6 +17,7 @@ file(GLOB_RECURSE DIR_SRCS CONFIGURE_DEPENDS ./*.c)
 add_vpp_plugin({{cookiecutter.project_alias}}
   SOURCES
   {{cookiecutter.project_alias}}.c
+  cli.c
   node.c
   {{cookiecutter.project_alias}}_periodic.c
   {{cookiecutter.project_alias}}.h
@@ -29,5 +30,5 @@ add_vpp_plugin({{cookiecutter.project_alias}}
   {{cookiecutter.project_alias}}.api
 
   API_TEST_SOURCES
-  {{cookiecutter.project_alias}}_test.c
+  {{cookiecutter.project_alias}}_api.c
 )

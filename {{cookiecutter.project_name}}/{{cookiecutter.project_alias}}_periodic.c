@@ -2,7 +2,7 @@
  * @Author: jankincai
  * @Date:   2021-09-22 11:24:22
  * @Last Modified by:   jankincai
- * @Last Modified time: 2021-09-22 14:23:46
+ * @Last Modified time: 2021-09-29 14:29:47
  */
 /*
  * {{cookiecutter.project_alias}}_periodic.c - skeleton plug-in periodic function
@@ -20,8 +20,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#include <vlib/vlib.h>
+{% set prefix = cookiecutter.project_alias[0] %}#include <vlib/vlib.h>
 #include <vppinfra/error.h>
 #include <{{cookiecutter.project_name}}/{{cookiecutter.project_alias}}.h>
 
@@ -61,31 +60,31 @@ static uword {{cookiecutter.project_alias}}_periodic_process(vlib_main_t *vm, vl
     while (1)
     {
         if (pm->periodic_timer_enabled)
-            vlib_process_wait_for_event_or_clock (vm, timeout);
+            vlib_process_wait_for_event_or_clock(vm, timeout);
         else
-            vlib_process_wait_for_event (vm);
+            vlib_process_wait_for_event(vm);
 
-        now = vlib_time_now (vm);
+        now = vlib_time_now(vm);
 
-        event_type = vlib_process_get_events (vm, (uword **) & event_data);
+        event_type = vlib_process_get_events(vm, (uword **) & event_data);
 
         switch (event_type)
         {
             /* Handle {{cookiecutter.project_alias.upper()}}_EVENT1 */
             case {{cookiecutter.project_alias.upper()}}_EVENT1:
-                for (i = 0; i < vec_len (event_data); i++)
-                    handle_event1 (pm, now, event_data[i]);
+                for (i = 0; i < vec_len(event_data); i++)
+                    handle_event1(pm, now, event_data[i]);
                 break;
 
             /* Handle {{cookiecutter.project_alias.upper()}}_EVENT2 */
             case {{cookiecutter.project_alias.upper()}}_EVENT2:
-                for (i = 0; i < vec_len (event_data); i++)
-                    handle_event2 (pm, now, event_data[i]);
+                for (i = 0; i < vec_len(event_data); i++)
+                    handle_event2(pm, now, event_data[i]);
                 break;
             /* Handle the periodic timer on/off event */
             case {{cookiecutter.project_alias.upper()}}_EVENT_PERIODIC_ENABLE_DISABLE:
-                for (i = 0; i < vec_len (event_data); i++)
-                    handle_periodic_enable_disable (pm, now, event_data[i]);
+                for (i = 0; i < vec_len(event_data); i++)
+                    handle_periodic_enable_disable(pm, now, event_data[i]);
                 break;
 
             /* Handle periodic timeouts */
@@ -93,22 +92,21 @@ static uword {{cookiecutter.project_alias}}_periodic_process(vlib_main_t *vm, vl
                 handle_timeout(pm, now);
                 break;
         }
+
         vec_reset_length(event_data);
     }
 
     return 0;			/* or not */
 }
 
-void {{cookiecutter.project_alias}}_create_periodic_process ({{cookiecutter.project_alias}}_main_t *fmp)
+void {{cookiecutter.project_alias}}_create_periodic_process({{cookiecutter.project_alias}}_main_t *{{prefix}}mp)
 {
     /* Already created the process node? */
-    if (fmp->periodic_node_index > 0)
+    if ({{prefix}}mp->periodic_node_index > 0)
         return;
 
     /* No, create it now and make a note of the node index */
-    fmp->periodic_node_index = vlib_process_create (fmp->vlib_main,
-        "{{cookiecutter.project_name}}-periodic-process",
-        {{cookiecutter.project_alias}}_periodic_process, 16 /* log2_n_stack_bytes */);
+    {{prefix}}mp->periodic_node_index = vlib_process_create({{prefix}}mp->vlib_main, "{{cookiecutter.project_name}}-periodic-process", {{cookiecutter.project_alias}}_periodic_process, 16 /* log2_n_stack_bytes */);
 }
 
 /*

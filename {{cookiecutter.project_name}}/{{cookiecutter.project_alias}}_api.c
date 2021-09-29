@@ -2,7 +2,7 @@
  * @Author: jankincai
  * @Date:   2021-09-10 13:43:30
  * @Last Modified by:   jankincai
- * @Last Modified time: 2021-09-22 14:17:02
+ * @Last Modified time: 2021-09-29 15:51:05
  */
 /*
  * {{cookiecutter.project_alias}}.c - {{cookiecutter.project_alias}} vpp-api-test plug-in
@@ -20,20 +20,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <vat/vat.h>
+{% set prefix = cookiecutter.project_alias[0] %}#include <vat/vat.h>
+#include <vnet/vnet.h>
 #include <vlibapi/api.h>
 #include <vlibmemory/api.h>
 #include <vppinfra/error.h>
 #include <stdbool.h>
+#include <{{cookiecutter.project_name}}/{{cookiecutter.project_alias}}.h>
+
+#include <vlibapi/api.h>
+#include <vlibmemory/api.h>
+#include <vppinfra/error.h>
+
+#define REPLY_MSG_ID_BASE {{prefix}}mp->msg_id_base
+#include <vlibapi/api_helper_macros.h>
 
 #define __plugin_msg_base {{cookiecutter.project_alias}}_test_main.msg_id_base
 #include <vlibapi/vat_helper_macros.h>
 
-uword unformat_sw_if_index (unformat_input_t * input, va_list * args);
+uword unformat_sw_if_index(unformat_input_t * input, va_list * args);
 
 /* Declare message IDs */
 #include <{{cookiecutter.project_name}}/{{cookiecutter.project_alias}}.api_enum.h>
 #include <{{cookiecutter.project_name}}/{{cookiecutter.project_alias}}.api_types.h>
+
+{{cookiecutter.project_alias}}_main_t {{cookiecutter.project_alias}}_main;
 
 
 typedef struct
@@ -47,7 +58,7 @@ typedef struct
 {{cookiecutter.project_alias}}_test_main_t {{cookiecutter.project_alias}}_test_main;
 
 
-static int api_{{cookiecutter.project_alias}}_enable_disable (vat_main_t * vam)
+static int api_{{cookiecutter.project_alias}}_enable_disable(vat_main_t * vam)
 {
     unformat_input_t * i = vam->input;
     int enable_disable = 1;
@@ -58,20 +69,10 @@ static int api_{{cookiecutter.project_alias}}_enable_disable (vat_main_t * vam)
     /* Parse args required to build the message */
     while (unformat_check_input(i) != UNFORMAT_END_OF_INPUT)
     {
-        if (unformat(i, "%U", unformat_sw_if_index, vam, &sw_if_index))
-            ;
-        else if (unformat(i, "sw_if_index %d", &sw_if_index))
-            ;
-        else if (unformat(i, "disable"))
+        if (unformat(i, "disable"))
             enable_disable = 0;
         else
             break;
-    }
-
-    if (sw_if_index == ~0)
-    {
-        errmsg("missing interface name / explicit sw_if_index number \n");
-        return -99;
     }
 
     /* Construct the API message */

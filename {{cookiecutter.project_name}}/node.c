@@ -2,24 +2,9 @@
  * @Author: jankincai
  * @Date:   2021-09-02 21:10:40
  * @Last Modified by:   jankincai
- * @Last Modified time: 2021-09-22 14:18:02
+ * @Last Modified time: 2021-09-29 15:17:14
  */
-/*
- * node.c - skeleton vpp engine plug-in dual-loop node skeleton
- *
- * Copyright (c) <current-year> <your-organization>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at:
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+#include <netinet/in.h>
 #include <vlib/vlib.h>
 #include <vnet/vnet.h>
 #include <vnet/pg/pg.h>
@@ -80,13 +65,12 @@ static char * {{cookiecutter.project_alias}}_error_strings[] =
 
 typedef enum 
 {
-    {{cookiecutter.project_alias.upper()}}_NEXT_ETHERNET_INPUT,
     {{cookiecutter.project_alias.upper()}}_NEXT_ERROR_DROP,
     {{cookiecutter.project_alias.upper()}}_N_NEXT,
 }{{cookiecutter.project_alias}}_next_t;
 
 
-VLIB_NODE_FN({{cookiecutter.project_alias}}) (vlib_main_t *vm, vlib_node_runtime_t *node, vlib_frame_t *frame)
+static int {{cookiecutter.project_alias}}_node_func(vlib_main_t *vm, vlib_node_runtime_t *node, vlib_frame_t *frame, uint8_t is_input)
 {
     u32 n_left_from, *from, *to_next;
     {{cookiecutter.project_alias}}_next_t next_index;
@@ -106,8 +90,8 @@ VLIB_NODE_FN({{cookiecutter.project_alias}}) (vlib_main_t *vm, vlib_node_runtime
         {
             u32 bi0;
             vlib_buffer_t * b0;
-            u32 next0 = {{cookiecutter.project_alias.upper()}}_NEXT_ETHERNET_INPUT;
-            u32 sw_if_index0;
+            u32 next0;
+            u32 sw_if_index0, sw_if_index_rx, sw_if_index_tx;
             u8 tmp0[6];
             ethernet_header_t *en0;
 
@@ -122,9 +106,21 @@ VLIB_NODE_FN({{cookiecutter.project_alias}}) (vlib_main_t *vm, vlib_node_runtime
             b0 = vlib_get_buffer(vm, bi0);
 
             ASSERT(b0->current_data == 0);
+
+            sw_if_index0 = vnet_buffer(b0)->sw_if_index[VLIB_RX];
+            sw_if_index_rx = sw_if_index0;
+            sw_if_index_tx = vnet_buffer(b0)->sw_if_index[VLIB_TX];
+
+            vnet_feature_next(&next0, b0);
+
+            // 发送数据包到输出队列, 一般挂载output节点
+            // vnet_buffer(b0).sw_if_index[VLIB_TX] = sw_if_index0;
           
             // en0 = vlib_buffer_get_current (b0);
             en0 = (ethernet_header_t*)b0->data;
+
+            uint16_t ethtype = ntohs(en0->type);
+
 
             if (PREDICT_FALSE((node->flags & VLIB_NODE_FLAG_TRACE) && (b0->flags & VLIB_BUFFER_IS_TRACED)))
             {
@@ -150,11 +146,17 @@ VLIB_NODE_FN({{cookiecutter.project_alias}}) (vlib_main_t *vm, vlib_node_runtime
 }
 
 
+VLIB_NODE_FN({{cookiecutter.project_alias}}_input) (vlib_main_t *vm, vlib_node_runtime_t *node, vlib_frame_t *frame)
+{
+    return {{cookiecutter.project_alias}}_node_func(vm, node, frame, 1 /* input */);
+}
+
+
 /* *INDENT-OFF* */
 #ifndef CLIB_MARCH_VARIANT
-VLIB_REGISTER_NODE ({{cookiecutter.project_alias}}) = 
+VLIB_REGISTER_NODE({{cookiecutter.project_alias}}_input) = 
 {
-    .name = "{{cookiecutter.project_alias}}",
+    .name = "{{cookiecutter.project_name}}-input",
     .vector_size = sizeof(u32),
     .format_trace = format_{{cookiecutter.project_alias}}_trace,
     .type = VLIB_NODE_TYPE_INTERNAL,
@@ -163,8 +165,32 @@ VLIB_REGISTER_NODE ({{cookiecutter.project_alias}}) =
     .n_next_nodes = {{cookiecutter.project_alias.upper()}}_N_NEXT,
     /* edit / add dispositions here */
     .next_nodes = {
-        [{{cookiecutter.project_alias.upper()}}_NEXT_ETHERNET_INPUT] = "ethernet-input",
         [{{cookiecutter.project_alias.upper()}}_NEXT_ERROR_DROP] = "error-drop",
+    },
+};
+#endif /* CLIB_MARCH_VARIANT */
+/* *INDENT-ON* */
+
+
+VLIB_NODE_FN({{cookiecutter.project_alias}}_output) (vlib_main_t *vm, vlib_node_runtime_t *node, vlib_frame_t *frame)
+{
+    return {{cookiecutter.project_alias}}_node_func(vm, node, frame, 0 /* output */);
+}
+
+/* *INDENT-OFF* */
+#ifndef CLIB_MARCH_VARIANT
+VLIB_REGISTER_NODE({{cookiecutter.project_alias}}_output) = 
+{
+    .name = "{{cookiecutter.project_name}}-output",
+    .vector_size = sizeof(u32),
+    .format_trace = format_{{cookiecutter.project_alias}}_trace,
+    .type = VLIB_NODE_TYPE_INTERNAL,
+    .n_errors = ARRAY_LEN({{cookiecutter.project_alias}}_error_strings),
+    .error_strings = {{cookiecutter.project_alias}}_error_strings,
+    .n_next_nodes = {{cookiecutter.project_alias.upper()}}_N_NEXT,
+    /* edit / add dispositions here */
+    .next_nodes = {
+        [{{cookiecutter.project_alias | upper()}}_NEXT_ERROR_DROP] = "error-drop",
     },
 };
 #endif /* CLIB_MARCH_VARIANT */

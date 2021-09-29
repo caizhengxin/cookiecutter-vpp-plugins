@@ -2,7 +2,7 @@
  * @Author: jankincai
  * @Date:   2021-09-22 10:57:23
  * @Last Modified by:   jankincai
- * @Last Modified time: 2021-09-22 11:04:35
+ * @Last Modified time: 2021-09-29 15:52:20
  */
 
 /*
@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __included_{{cookiecutter.project_alias}}_h__
+{% set prefix = cookiecutter.project_alias[0] %}#ifndef __included_{{cookiecutter.project_alias}}_h__
 #define __included_{{cookiecutter.project_alias}}_h__
 
 #include <vnet/vnet.h>
@@ -41,9 +41,9 @@ typedef struct {
     u32 periodic_node_index;
 
     /* convenience */
-    vlib_main_t * vlib_main;
-    vnet_main_t * vnet_main;
-    ethernet_main_t * ethernet_main;
+    vlib_main_t *vlib_main;
+    vnet_main_t *vnet_main;
+    ethernet_main_t *ethernet_main;
 }{{cookiecutter.project_alias}}_main_t;
 
 extern {{cookiecutter.project_alias}}_main_t {{cookiecutter.project_alias}}_main;
@@ -56,7 +56,10 @@ extern vlib_node_registration_t {{cookiecutter.project_alias}}_periodic_node;
 #define {{cookiecutter.project_alias.upper()}}_EVENT2 2
 #define {{cookiecutter.project_alias.upper()}}_EVENT_PERIODIC_ENABLE_DISABLE 3
 
-void {{cookiecutter.project_alias}}_create_periodic_process ({{cookiecutter.project_alias}}_main_t *);
+
+void {{cookiecutter.project_alias}}_create_periodic_process({{cookiecutter.project_alias}}_main_t *);
+
+extern int {{cookiecutter.project_alias}}_enable_disable({{cookiecutter.project_alias}}_main_t *{{prefix}}mp, int enable_disable);
 
 #endif /* __included_{{cookiecutter.project_alias}}_h__ */
 
