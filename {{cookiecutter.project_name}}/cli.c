@@ -2,7 +2,7 @@
  * @Author: jankincai
  * @Date:   2021-09-29 09:23:25
  * @Last Modified by:   jankincai
- * @Last Modified time: 2021-09-29 15:27:46
+ * @Last Modified time: 2021-10-29 15:43:08
  */
 {% set prefix = cookiecutter.project_alias[0] %}#include <vnet/vnet.h>
 #include <vnet/plugin/plugin.h>
@@ -10,7 +10,7 @@
 #include <{{cookiecutter.project_name}}/{{cookiecutter.project_alias}}.h>
 
 
-{{cookiecutter.project_alias}}_main_t {{cookiecutter.project_alias}}_main;
+extern {{cookiecutter.project_alias}}_main_t {{cookiecutter.project_alias}}_main;
 
 
 
@@ -104,3 +104,89 @@ VLIB_CLI_COMMAND({{cookiecutter.project_alias}}_disable_command, static) =
 };
 /* *INDENT-ON* */
 
+
+static clib_error_t *{{cookiecutter.project_alias}}_add_del_command_fn(vlib_main_t *vm, unformat_input_t *input, vlib_cli_command_t *cmd, uint8_t is_add)
+{
+    {{cookiecutter.project_alias}}_main_t *{{ prefix }}mp = &{{cookiecutter.project_alias}}_main;
+
+    u32 id = 0;
+
+    while (unformat_check_input(input) != UNFORMAT_END_OF_INPUT)
+    {
+        if (unformat(input, "id %d", &id))
+            ;
+        else
+            break;
+    }
+
+    printf("id = %d\n", id);
+
+    return 0;
+}
+
+
+static clib_error_t *{{cookiecutter.project_alias}}_add_command_fn(vlib_main_t *vm, unformat_input_t *input, vlib_cli_command_t *cmd)
+{
+    return {{cookiecutter.project_alias}}_add_del_command_fn(vm, input, cmd, 1 /* add */);
+}
+
+
+/* *INDENT-OFF* */
+VLIB_CLI_COMMAND({{cookiecutter.project_alias}}_add_command, static) =
+{
+    .path = "{{cookiecutter.project_alias}} add",
+    .short_help = "{{cookiecutter.project_alias}} add",
+    .function = {{cookiecutter.project_alias}}_add_command_fn,
+};
+/* *INDENT-ON* */
+
+
+static clib_error_t *{{cookiecutter.project_alias}}_del_command_fn(vlib_main_t *vm, unformat_input_t *input, vlib_cli_command_t *cmd)
+{
+    return {{cookiecutter.project_alias}}_add_del_command_fn(vm, input, cmd, 0 /* del */);
+}
+
+
+/* *INDENT-OFF* */
+VLIB_CLI_COMMAND({{cookiecutter.project_alias}}_del_command, static) =
+{
+    .path = "{{cookiecutter.project_alias}} del",
+    .short_help = "{{cookiecutter.project_alias}} del",
+    .function = {{cookiecutter.project_alias}}_del_command_fn,
+};
+/* *INDENT-ON* */
+
+
+static clib_error_t *{{cookiecutter.project_alias}}_show_command_fn(vlib_main_t *vm, unformat_input_t *input, vlib_cli_command_t *cmd)
+{
+    vlib_cli_output(vm, "test");
+
+    return 0;
+}
+
+
+/* *INDENT-OFF* */
+VLIB_CLI_COMMAND({{cookiecutter.project_alias}}_show_command, static) =
+{
+    .path = "{{cookiecutter.project_alias}} show",
+    .short_help = "{{cookiecutter.project_alias}} show",
+    .function = {{cookiecutter.project_alias}}_show_command_fn,
+};
+/* *INDENT-ON* */
+
+
+static clib_error_t *{{cookiecutter.project_alias}}_flush_command_fn(vlib_main_t *vm, unformat_input_t *input, vlib_cli_command_t *cmd)
+{
+
+    return 0;
+}
+
+
+/* *INDENT-OFF* */
+VLIB_CLI_COMMAND({{cookiecutter.project_alias}}_flush_command, static) =
+{
+    .path = "{{cookiecutter.project_alias}} flush",
+    .short_help = "{{cookiecutter.project_alias}} flush",
+    .function = {{cookiecutter.project_alias}}_flush_command_fn,
+};
+/* *INDENT-ON* */

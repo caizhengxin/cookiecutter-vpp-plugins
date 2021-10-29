@@ -2,7 +2,7 @@
  * @Author: jankincai
  * @Date:   2021-09-10 13:43:30
  * @Last Modified by:   jankincai
- * @Last Modified time: 2021-09-29 15:51:05
+ * @Last Modified time: 2021-10-19 17:25:38
  */
 /*
  * {{cookiecutter.project_alias}}.c - {{cookiecutter.project_alias}} vpp-api-test plug-in
@@ -44,7 +44,7 @@ uword unformat_sw_if_index(unformat_input_t * input, va_list * args);
 #include <{{cookiecutter.project_name}}/{{cookiecutter.project_alias}}.api_enum.h>
 #include <{{cookiecutter.project_name}}/{{cookiecutter.project_alias}}.api_types.h>
 
-{{cookiecutter.project_alias}}_main_t {{cookiecutter.project_alias}}_main;
+extern {{cookiecutter.project_alias}}_main_t {{cookiecutter.project_alias}}_main;
 
 
 typedef struct

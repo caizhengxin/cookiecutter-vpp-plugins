@@ -2,7 +2,7 @@
  * @Author: jankincai
  * @Date:   2021-09-02 21:10:40
  * @Last Modified by:   jankincai
- * @Last Modified time: 2021-09-29 15:17:14
+ * @Last Modified time: 2021-10-28 11:49:53
  */
 #include <netinet/in.h>
 #include <vlib/vlib.h>
@@ -92,7 +92,7 @@ static int {{cookiecutter.project_alias}}_node_func(vlib_main_t *vm, vlib_node_r
             vlib_buffer_t * b0;
             u32 next0;
             u32 sw_if_index0, sw_if_index_rx, sw_if_index_tx;
-            u8 tmp0[6];
+            // u8 tmp0[6];
             ethernet_header_t *en0;
 
             /* speculatively enqueue b0 to the current next frame */
@@ -105,7 +105,7 @@ static int {{cookiecutter.project_alias}}_node_func(vlib_main_t *vm, vlib_node_r
 
             b0 = vlib_get_buffer(vm, bi0);
 
-            ASSERT(b0->current_data == 0);
+            // ASSERT(b0->current_data == 0);
 
             sw_if_index0 = vnet_buffer(b0)->sw_if_index[VLIB_RX];
             sw_if_index_rx = sw_if_index0;
@@ -121,6 +121,19 @@ static int {{cookiecutter.project_alias}}_node_func(vlib_main_t *vm, vlib_node_r
 
             uint16_t ethtype = ntohs(en0->type);
 
+            ip4_header_t *ip4 = NULL;
+            ip6_header_t *ip6 = NULL;
+
+            if (ethtype == ETHERNET_TYPE_IP4)
+            {
+                ip4 = (ip4_header_t *)(en0 + 1);
+
+                dnat_rewrite_ip4(ip4);
+            }
+            else if (ethtype == ETHERNET_TYPE_IP6)
+            {
+                ip6 = (ip6_header_t *)(en0 + 1);   
+            }
 
             if (PREDICT_FALSE((node->flags & VLIB_NODE_FLAG_TRACE) && (b0->flags & VLIB_BUFFER_IS_TRACED)))
             {
