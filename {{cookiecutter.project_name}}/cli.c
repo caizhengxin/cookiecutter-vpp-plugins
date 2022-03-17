@@ -2,7 +2,7 @@
  * @Author: jankincai
  * @Date:   2021-09-29 09:23:25
  * @Last Modified by:   jankincai
- * @Last Modified time: 2021-10-29 15:43:08
+ * @Last Modified time: 2022-03-17 15:02:10
  */
 {% set prefix = cookiecutter.project_alias[0] %}#include <vnet/vnet.h>
 #include <vnet/plugin/plugin.h>
@@ -41,14 +41,14 @@ int {{cookiecutter.project_alias}}_enable_disable({{cookiecutter.project_alias}}
     {
         sorted_sis = vec_new(vnet_sw_interface_t, pool_elts(im->sw_interfaces));
         _vec_len(sorted_sis) = 0;
-        
+
         pool_foreach(si, im->sw_interfaces)
         {
             int visible = vnet_swif_is_api_visible(si);
             if (visible)
             {
                 vec_add1(sorted_sis, si[0]);
-            }            
+            }
         }
     }
 
@@ -57,7 +57,7 @@ int {{cookiecutter.project_alias}}_enable_disable({{cookiecutter.project_alias}}
         if (si->sw_if_index != 0)
         {
             __{{cookiecutter.project_alias}}_enable_disable({{prefix}}mp, si->sw_if_index, enable_disable);
-        }        
+        }
     }
 
     vec_free(sorted_sis);
@@ -134,8 +134,8 @@ static clib_error_t *{{cookiecutter.project_alias}}_add_command_fn(vlib_main_t *
 /* *INDENT-OFF* */
 VLIB_CLI_COMMAND({{cookiecutter.project_alias}}_add_command, static) =
 {
-    .path = "{{cookiecutter.project_alias}} add",
-    .short_help = "{{cookiecutter.project_alias}} add",
+    .path = "{{cookiecutter.project_name}} add",
+    .short_help = "{{cookiecutter.project_name}} add",
     .function = {{cookiecutter.project_alias}}_add_command_fn,
 };
 /* *INDENT-ON* */
@@ -150,8 +150,8 @@ static clib_error_t *{{cookiecutter.project_alias}}_del_command_fn(vlib_main_t *
 /* *INDENT-OFF* */
 VLIB_CLI_COMMAND({{cookiecutter.project_alias}}_del_command, static) =
 {
-    .path = "{{cookiecutter.project_alias}} del",
-    .short_help = "{{cookiecutter.project_alias}} del",
+    .path = "{{cookiecutter.project_name}} del",
+    .short_help = "{{cookiecutter.project_name}} del",
     .function = {{cookiecutter.project_alias}}_del_command_fn,
 };
 /* *INDENT-ON* */
@@ -168,8 +168,8 @@ static clib_error_t *{{cookiecutter.project_alias}}_show_command_fn(vlib_main_t 
 /* *INDENT-OFF* */
 VLIB_CLI_COMMAND({{cookiecutter.project_alias}}_show_command, static) =
 {
-    .path = "{{cookiecutter.project_alias}} show",
-    .short_help = "{{cookiecutter.project_alias}} show",
+    .path = "{{cookiecutter.project_name}} show",
+    .short_help = "{{cookiecutter.project_name}} show",
     .function = {{cookiecutter.project_alias}}_show_command_fn,
 };
 /* *INDENT-ON* */
@@ -185,8 +185,8 @@ static clib_error_t *{{cookiecutter.project_alias}}_flush_command_fn(vlib_main_t
 /* *INDENT-OFF* */
 VLIB_CLI_COMMAND({{cookiecutter.project_alias}}_flush_command, static) =
 {
-    .path = "{{cookiecutter.project_alias}} flush",
-    .short_help = "{{cookiecutter.project_alias}} flush",
+    .path = "{{cookiecutter.project_name}} flush",
+    .short_help = "{{cookiecutter.project_name}} flush",
     .function = {{cookiecutter.project_alias}}_flush_command_fn,
 };
 /* *INDENT-ON* */

@@ -2,7 +2,7 @@
  * @Author: jankincai
  * @Date:   2021-09-02 21:10:40
  * @Last Modified by:   jankincai
- * @Last Modified time: 2021-10-28 11:49:53
+ * @Last Modified time: 2022-03-17 15:02:41
  */
 #include <netinet/in.h>
 #include <vlib/vlib.h>
@@ -11,7 +11,7 @@
 #include <vppinfra/error.h>
 #include <{{cookiecutter.project_name}}/{{cookiecutter.project_alias}}.h>
 
-typedef struct 
+typedef struct
 {
     u32 next_index;
     u32 sw_if_index;
@@ -32,7 +32,7 @@ static u8 *format_{{cookiecutter.project_alias}}_trace(u8 *s, va_list *args)
     CLIB_UNUSED (vlib_main_t *vm) = va_arg(*args, vlib_main_t *);
     CLIB_UNUSED (vlib_node_t *node) = va_arg(*args, vlib_node_t *);
     {{cookiecutter.project_alias}}_trace_t *t = va_arg(*args, {{cookiecutter.project_alias}}_trace_t *);
-  
+
     s = format(s, "{{cookiecutter.project_alias.upper()}}: sw_if_index %d, next index %d\n", t->sw_if_index, t->next_index);
     s = format(s, "  new src %U -> new dst %U", my_format_mac_address, t->new_src_mac, my_format_mac_address, t->new_dst_mac);
 
@@ -55,7 +55,7 @@ typedef enum {
 
 
 #ifndef CLIB_MARCH_VARIANT
-static char * {{cookiecutter.project_alias}}_error_strings[] = 
+static char * {{cookiecutter.project_alias}}_error_strings[] =
 {
 #define _(sym,string) string,
     foreach_{{cookiecutter.project_alias}}_error
@@ -63,7 +63,7 @@ static char * {{cookiecutter.project_alias}}_error_strings[] =
 };
 #endif /* CLIB_MARCH_VARIANT */
 
-typedef enum 
+typedef enum
 {
     {{cookiecutter.project_alias.upper()}}_NEXT_ERROR_DROP,
     {{cookiecutter.project_alias.upper()}}_N_NEXT,
@@ -115,7 +115,7 @@ static int {{cookiecutter.project_alias}}_node_func(vlib_main_t *vm, vlib_node_r
 
             // 发送数据包到输出队列, 一般挂载output节点
             // vnet_buffer(b0).sw_if_index[VLIB_TX] = sw_if_index0;
-          
+
             // en0 = vlib_buffer_get_current (b0);
             en0 = (ethernet_header_t*)b0->data;
 
@@ -127,12 +127,10 @@ static int {{cookiecutter.project_alias}}_node_func(vlib_main_t *vm, vlib_node_r
             if (ethtype == ETHERNET_TYPE_IP4)
             {
                 ip4 = (ip4_header_t *)(en0 + 1);
-
-                dnat_rewrite_ip4(ip4);
             }
             else if (ethtype == ETHERNET_TYPE_IP6)
             {
-                ip6 = (ip6_header_t *)(en0 + 1);   
+                ip6 = (ip6_header_t *)(en0 + 1);
             }
 
             if (PREDICT_FALSE((node->flags & VLIB_NODE_FLAG_TRACE) && (b0->flags & VLIB_BUFFER_IS_TRACED)))
@@ -167,7 +165,7 @@ VLIB_NODE_FN({{cookiecutter.project_alias}}_input) (vlib_main_t *vm, vlib_node_r
 
 /* *INDENT-OFF* */
 #ifndef CLIB_MARCH_VARIANT
-VLIB_REGISTER_NODE({{cookiecutter.project_alias}}_input) = 
+VLIB_REGISTER_NODE({{cookiecutter.project_alias}}_input) =
 {
     .name = "{{cookiecutter.project_name}}-input",
     .vector_size = sizeof(u32),
@@ -192,7 +190,7 @@ VLIB_NODE_FN({{cookiecutter.project_alias}}_output) (vlib_main_t *vm, vlib_node_
 
 /* *INDENT-OFF* */
 #ifndef CLIB_MARCH_VARIANT
-VLIB_REGISTER_NODE({{cookiecutter.project_alias}}_output) = 
+VLIB_REGISTER_NODE({{cookiecutter.project_alias}}_output) =
 {
     .name = "{{cookiecutter.project_name}}-output",
     .vector_size = sizeof(u32),
