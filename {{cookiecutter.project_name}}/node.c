@@ -2,7 +2,7 @@
  * @Author: jankincai
  * @Date:   2021-09-02 21:10:40
  * @Last Modified by:   jankincai
- * @Last Modified time: 2022-03-17 15:02:41
+ * @Last Modified time: 2023-02-13 15:24:35
  */
 #include <netinet/in.h>
 #include <vlib/vlib.h>
@@ -119,7 +119,21 @@ static int {{cookiecutter.project_alias}}_node_func(vlib_main_t *vm, vlib_node_r
             // en0 = vlib_buffer_get_current (b0);
             en0 = (ethernet_header_t*)b0->data;
 
-            uint16_t ethtype = ntohs(en0->type);
+            uint16_t ethtype = clib_host_to_net_u16(en0->type);
+
+            ethernet_vlan_header_t *vlan = NULL;
+
+            if (ethernet_frame_is_tagged(ethtype))
+            {
+                vlan = (ethernet_vlan_header_t*) (en0 + 1);
+
+                ethtype = clib_net_to_host_u16(vlan->type);
+
+                if (ethtype == ETHERNET_TYPE_VLAN) {
+                    vlan++;
+                    ethtype = clib_net_to_host_u16(vlan->type);
+                }
+            }
 
             ip4_header_t *ip4 = NULL;
             ip6_header_t *ip6 = NULL;
