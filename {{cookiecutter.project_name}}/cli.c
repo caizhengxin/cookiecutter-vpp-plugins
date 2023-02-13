@@ -2,12 +2,13 @@
  * @Author: jankincai
  * @Date:   2021-09-29 09:23:25
  * @Last Modified by:   jankincai
- * @Last Modified time: 2022-03-17 15:02:10
+ * @Last Modified time: 2023-02-13 18:13:57
  */
 {% set prefix = cookiecutter.project_alias[0] %}#include <vnet/vnet.h>
 #include <vnet/plugin/plugin.h>
 #include <vlibmemory/api.h>
 #include <{{cookiecutter.project_name}}/{{cookiecutter.project_alias}}.h>
+// #include <utils/vpp-plugins.h>
 
 
 extern {{cookiecutter.project_alias}}_main_t {{cookiecutter.project_alias}}_main;
@@ -101,6 +102,81 @@ VLIB_CLI_COMMAND({{cookiecutter.project_alias}}_disable_command, static) =
     .path = "{{cookiecutter.project_name}} disable",
     .short_help = "{{cookiecutter.project_name}} disable",
     .function = {{cookiecutter.project_alias}}_disable_command_fn,
+};
+/* *INDENT-ON* */
+
+
+static clib_error_t *{{cookiecutter.project_alias}}_loads_command_fn(vlib_main_t *vm, unformat_input_t *input, vlib_cli_command_t *cmd, uint8_t is_add)
+{
+    {{cookiecutter.project_alias}}_main_t *{{ prefix }}mp = &{{cookiecutter.project_alias}}_main;
+
+    clib_error_t *error = NULL;
+    unformat_input_t _line_input, *line_input = &_line_input;
+    uint8_t *filestr = NULL;
+
+    if (!unformat_user(input, unformat_line_input, line_input))
+        return 0;
+
+    while (unformat_check_input(line_input) != UNFORMAT_END_OF_INPUT)
+    {
+        if (!unformat(line_input, "%s", &filestr))
+        {
+            return clib_error_return(0, "unformat error.");
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    // TODO
+
+    vec_free(filestr);
+
+    return error;
+}
+
+
+/* *INDENT-OFF* */
+VLIB_CLI_COMMAND({{cookiecutter.project_alias}}_loads_command, static) =
+{
+    .path = "{{cookiecutter.project_name}} loads",
+    .short_help = "{{cookiecutter.project_name}} loads <file>",
+    .function = {{cookiecutter.project_alias}}_loads_command_fn,
+};
+/* *INDENT-ON* */
+
+
+static clib_error_t *{{cookiecutter.project_alias}}_delete_command_fn(vlib_main_t *vm, unformat_input_t *input, vlib_cli_command_t *cmd, uint8_t is_add)
+{
+    {{cookiecutter.project_alias}}_main_t *{{ prefix }}mp = &{{cookiecutter.project_alias}}_main;
+
+    uint32_t rid = 0;
+
+    while (unformat_check_input(input) != UNFORMAT_END_OF_INPUT)
+    {
+        if (unformat(input, "%d", &rid))
+        {
+            // xxx_delete({{ prefix }}mp->rules, (uint16_t)rid);
+        }
+        else if (unformat(input, "rid %d", &rid))
+        {
+            // xxx_delete({{ prefix }}mp->rules, (uint16_t)rid);
+        }
+        else
+            break;
+    }
+
+    return 0;
+}
+
+
+/* *INDENT-OFF* */
+VLIB_CLI_COMMAND({{cookiecutter.project_alias}}_delete_command, static) =
+{
+    .path = "{{cookiecutter.project_name}} delete",
+    .short_help = "{{cookiecutter.project_name}} delete",
+    .function = {{cookiecutter.project_alias}}_delete_command_fn,
 };
 /* *INDENT-ON* */
 
