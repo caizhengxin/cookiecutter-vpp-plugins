@@ -2,7 +2,7 @@
  * @Author: jankincai
  * @Date:   2021-09-29 09:23:25
  * @Last Modified by:   jankincai
- * @Last Modified time: 2023-02-13 18:13:57
+ * @Last Modified time: 2023-02-16 10:08:01
  */
 {% set prefix = cookiecutter.project_alias[0] %}#include <vnet/vnet.h>
 #include <vnet/plugin/plugin.h>
@@ -29,7 +29,9 @@ int {{cookiecutter.project_alias}}_enable_disable({{cookiecutter.project_alias}}
     vnet_sw_interface_t *sw;
     int rv = 0;
 
-    {{cookiecutter.project_alias}}_create_periodic_process({{prefix}}mp);
+    // {{cookiecutter.project_alias}}_create_periodic_process({{prefix}}mp);
+
+    {{prefix}}mp->enable_disable = enable_disable;
 
     // vpp_plugins_enable_disable_all(&__{{cookiecutter.project_alias}}_enable_disable, (void*){{prefix}}mp, enable_disable);
 
@@ -37,7 +39,7 @@ int {{cookiecutter.project_alias}}_enable_disable({{cookiecutter.project_alias}}
     vnet_main_t *vnm = vnet_get_main();
     vnet_interface_main_t *im = &vnm->interface_main;
 
-    /* 获取所有接口 */
+    /* 设置所有网口 */
     if (vec_len(sorted_sis) == 0)
     {
         sorted_sis = vec_new(vnet_sw_interface_t, pool_elts(im->sw_interfaces));
@@ -70,9 +72,28 @@ int {{cookiecutter.project_alias}}_enable_disable({{cookiecutter.project_alias}}
 }
 
 
+static void auto_enable_disable({{cookiecutter.project_alias}}_main_t *{{ prefix }}mp)
+{
+    // 根据实际策略情况，编写以下代码，策略为空自动禁用插件，策略不为空则自动启用插件。
+    // if ({{ prefix }}mp->count == 0)
+    // {
+    //     {{cookiecutter.project_alias}}_enable_disable({{ prefix }}mp, 0);
+    // }
+    // else if ({{ prefix }}mp->enable_disable == 0)
+    // {
+    //     {{cookiecutter.project_alias}}_enable_disable({{ prefix }}mp, 1);
+    // }
+}
+
+
 static clib_error_t *{{cookiecutter.project_alias}}_enable_command_fn(vlib_main_t *vm, unformat_input_t *input, vlib_cli_command_t *cmd)
 {
-    {{cookiecutter.project_alias}}_enable_disable(&{{cookiecutter.project_alias}}_main, 1);
+    {{cookiecutter.project_alias}}_main_t *{{ prefix }}mp = &{{cookiecutter.project_alias}}_main;
+
+    if ({{ prefix }}mp->enable_disable == 0)
+    {
+        {{cookiecutter.project_alias}}_enable_disable({{ prefix }}mp, 1);
+    }
 
     return 0;
 }
@@ -90,7 +111,9 @@ VLIB_CLI_COMMAND({{cookiecutter.project_alias}}_enable_command, static) =
 
 static clib_error_t *{{cookiecutter.project_alias}}_disable_command_fn(vlib_main_t *vm, unformat_input_t *input, vlib_cli_command_t *cmd)
 {
-    {{cookiecutter.project_alias}}_enable_disable(&{{cookiecutter.project_alias}}_main, 0);
+    {{cookiecutter.project_alias}}_main_t *{{ prefix }}mp = &{{cookiecutter.project_alias}}_main;
+
+    {{cookiecutter.project_alias}}_enable_disable({{ prefix }}mp, 0);
 
     return 0;
 }
@@ -130,8 +153,11 @@ static clib_error_t *{{cookiecutter.project_alias}}_loads_command_fn(vlib_main_t
     }
 
     // TODO
+    // Code
 
     vec_free(filestr);
+
+    auto_enable_disable({{ prefix }}mp);
 
     return error;
 }
@@ -167,6 +193,8 @@ static clib_error_t *{{cookiecutter.project_alias}}_delete_command_fn(vlib_main_
             break;
     }
 
+    auto_enable_disable({{ prefix }}mp);
+
     return 0;
 }
 
@@ -195,7 +223,11 @@ static clib_error_t *{{cookiecutter.project_alias}}_add_del_command_fn(vlib_main
             break;
     }
 
-    printf("id = %d\n", id);
+    vlib_cli_output(vm, "id:%d", id);
+
+    /* TODO */
+
+    auto_enable_disable({{ prefix }}mp);
 
     return 0;
 }
@@ -235,7 +267,11 @@ VLIB_CLI_COMMAND({{cookiecutter.project_alias}}_del_command, static) =
 
 static clib_error_t *{{cookiecutter.project_alias}}_show_command_fn(vlib_main_t *vm, unformat_input_t *input, vlib_cli_command_t *cmd)
 {
-    vlib_cli_output(vm, "test");
+    {{cookiecutter.project_alias}}_main_t *{{ prefix }}mp = &{{cookiecutter.project_alias}}_main;
+
+    vlib_cli_output(vm, "show command");
+
+    /* TODO */
 
     return 0;
 }
@@ -253,6 +289,11 @@ VLIB_CLI_COMMAND({{cookiecutter.project_alias}}_show_command, static) =
 
 static clib_error_t *{{cookiecutter.project_alias}}_flush_command_fn(vlib_main_t *vm, unformat_input_t *input, vlib_cli_command_t *cmd)
 {
+    {{cookiecutter.project_alias}}_main_t *{{ prefix }}mp = &{{cookiecutter.project_alias}}_main;
+
+    /* TODO */
+
+    {{cookiecutter.project_alias}}_enable_disable({{ prefix }}mp, 0);
 
     return 0;
 }

@@ -2,7 +2,7 @@
  * @Author: jankincai
  * @Date:   2021-09-22 10:57:23
  * @Last Modified by:   jankincai
- * @Last Modified time: 2021-10-26 11:09:46
+ * @Last Modified time: 2023-02-16 09:51:44
  */
 
 /*
@@ -44,6 +44,8 @@ typedef struct {
     vlib_main_t *vlib_main;
     vnet_main_t *vnet_main;
     ethernet_main_t *ethernet_main;
+
+    bool enable_disable;
 }{{cookiecutter.project_alias}}_main_t;
 
 extern {{cookiecutter.project_alias}}_main_t {{cookiecutter.project_alias}}_main;
