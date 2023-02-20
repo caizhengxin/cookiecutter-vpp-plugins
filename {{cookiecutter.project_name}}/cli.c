@@ -2,7 +2,7 @@
  * @Author: jankincai
  * @Date:   2021-09-29 09:23:25
  * @Last Modified by:   jankincai
- * @Last Modified time: 2023-02-16 10:08:01
+ * @Last Modified time: 2023-02-20 16:22:06
  */
 {% set prefix = cookiecutter.project_alias[0] %}#include <vnet/vnet.h>
 #include <vnet/plugin/plugin.h>
@@ -12,7 +12,6 @@
 
 
 extern {{cookiecutter.project_alias}}_main_t {{cookiecutter.project_alias}}_main;
-
 
 
 static int __{{cookiecutter.project_alias}}_enable_disable(void *szmp, u32 sw_if_index, int enable_disable)

@@ -2,7 +2,7 @@
  * @Author: jankincai
  * @Date:   2021-09-22 11:04:14
  * @Last Modified by:   jankincai
- * @Last Modified time: 2021-10-18 16:36:51
+ * @Last Modified time: 2023-02-20 16:20:11
  */
 /*
  * {{cookiecutter.project_alias}}.c - skeleton vpp engine plug-in
@@ -65,6 +65,8 @@ static clib_error_t *{{cookiecutter.project_alias}}_init(vlib_main_t *vm)
 
     /* Add our API messages to the global name_crc hash table */
     {{prefix}}mp->msg_id_base = setup_message_id_table();
+
+    {{prefix}}mp->enable_disable = false;
 
     return error;
 }
